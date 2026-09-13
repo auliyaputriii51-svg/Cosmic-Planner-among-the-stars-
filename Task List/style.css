@@ -1,0 +1,1147 @@
+/* =============================================================
+   style.css  —  Cosmic Planner / Task List
+   Space-themed: soft purple palette, crescent moon, stars,
+   floating nebula blobs, gentle animations, aesthetic photo frame.
+   ============================================================= */
+
+/* ══════════════════════════════════════════════════════════════
+   1. COSMIC BACKGROUND + THEME TOKENS
+   ══════════════════════════════════════════════════════════════ */
+
+/* ── Light mode tokens (default) ── */
+:root {
+  --bg-gradient:   linear-gradient(135deg, #f5f0ff 0%, #ede9fe 35%, #e9d5ff 65%, #f0e6ff 100%);
+  --tx-body:       #3b0764;
+  --tx-mid:        #5b21b6;
+  --tx-muted:      #7c3aed;
+  --tx-soft:       #a78bfa;
+  --tx-faint:      #c4b5fd;
+  --tx-heading:    #3b0764;
+  --tx-sub:        #7c3aed;
+  --surface:       rgba(255,255,255,0.82);
+  --surface-dk:    rgba(109,40,217,0.08);
+  --card-bg:       rgba(255,255,255,0.85);
+  --card-border:   rgba(167,139,250,0.3);
+  --card-shadow:   0 4px 20px rgba(167,139,250,0.15), inset 0 1px 0 rgba(255,255,255,0.9);
+  --card-hover-shadow: 0 6px 28px rgba(124,58,237,0.16), 0 0 0 1.5px rgba(167,139,250,0.4), inset 0 1px 0 rgba(255,255,255,0.95);
+  --input-bg:      rgba(255,255,255,0.9);
+  --input-focus-bg:#ffffff;
+  --input-border:  rgba(167,139,250,0.4);
+  --task-item-bg:  rgba(245,240,255,0.75);
+  --task-border:   rgba(167,139,250,0.25);
+  --agenda-item-bg:rgba(237,233,254,0.6);
+  --agenda-border: rgba(167,139,250,0.2);
+  --quote-bg:      rgba(109,40,217,0.07);
+  --modal-overlay: rgba(91,33,182,0.25);
+  --theme-toggle-bg: rgba(255,255,255,0.5);
+  --theme-toggle-border: rgba(196,181,253,0.6);
+  --theme-toggle-color: #7e22ce;
+  color-scheme: light;
+  transition: background 0.3s, color 0.3s;
+}
+
+/* ── Dark mode tokens ── */
+[data-theme="dark"] {
+  --bg-gradient:   linear-gradient(135deg, #0d0a1e 0%, #130d2b 35%, #1a1035 65%, #0f0b22 100%);
+  --tx-body:       #e9d5ff;
+  --tx-mid:        #c4b5fd;
+  --tx-muted:      #a78bfa;
+  --tx-soft:       #7c3aed;
+  --tx-faint:      #5b21b6;
+  --tx-heading:    #e9d5ff;
+  --tx-sub:        #a78bfa;
+  --surface:       rgba(30,20,66,0.9);
+  --surface-dk:    rgba(109,40,217,0.15);
+  --card-bg:       rgba(22,14,50,0.88);
+  --card-border:   rgba(124,58,237,0.35);
+  --card-shadow:   0 4px 20px rgba(109,40,217,0.25), inset 0 1px 0 rgba(196,181,253,0.08);
+  --card-hover-shadow: 0 6px 28px rgba(124,58,237,0.35), 0 0 0 1.5px rgba(167,139,250,0.5), inset 0 1px 0 rgba(196,181,253,0.1);
+  --input-bg:      rgba(20,12,46,0.9);
+  --input-focus-bg:rgba(26,16,56,1);
+  --input-border:  rgba(124,58,237,0.5);
+  --task-item-bg:  rgba(26,16,56,0.75);
+  --task-border:   rgba(124,58,237,0.2);
+  --agenda-item-bg:rgba(30,20,66,0.7);
+  --agenda-border: rgba(124,58,237,0.25);
+  --quote-bg:      rgba(109,40,217,0.18);
+  --modal-overlay: rgba(10,5,30,0.6);
+  --theme-toggle-bg: rgba(109,40,217,0.25);
+  --theme-toggle-border: rgba(167,139,250,0.4);
+  --theme-toggle-color: #c4b5fd;
+  color-scheme: dark;
+}
+
+.cosmic-bg {
+  background: var(--bg-gradient);
+  color: var(--tx-body);
+  min-height: 100vh;
+  transition: background 0.35s, color 0.35s;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   2. CRESCENT MOON + GLOW
+   ══════════════════════════════════════════════════════════════ */
+
+.moon-wrap {
+  position: absolute;
+  top: 48px;
+  right: 48px;
+  width: 90px;
+  height: 90px;
+  animation: moonFloat 8s ease-in-out infinite;
+}
+
+/* Build a crescent using overlapping circles (clip technique) */
+.crescent-moon {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 40%, #ffffff 0%, #e9d5ff 40%, #c084fc 100%);
+  box-shadow:
+    0 0 18px 4px rgba(192, 132, 252, 0.55),
+    0 0 40px 10px rgba(167, 139, 250, 0.3);
+  /* Mask right portion to create crescent */
+  -webkit-mask-image: radial-gradient(circle at 68% 38%, transparent 38%, black 40%);
+  mask-image: radial-gradient(circle at 68% 38%, transparent 38%, black 40%);
+}
+
+/* Soft glow blob behind the moon */
+.moon-glow {
+  position: absolute;
+  inset: -20px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(192, 132, 252, 0.3) 0%, transparent 70%);
+  animation: moonPulse 4s ease-in-out infinite;
+}
+
+@keyframes moonFloat {
+  0%, 100% { transform: translateY(0px) rotate(-2deg); }
+  50%       { transform: translateY(-14px) rotate(2deg); }
+}
+
+@keyframes moonPulse {
+  0%, 100% { opacity: 0.6; transform: scale(1); }
+  50%       { opacity: 1;   transform: scale(1.08); }
+}
+
+/* ══════════════════════════════════════════════════════════════
+   3. NEBULA BLOBS (floating colour clouds)
+   ══════════════════════════════════════════════════════════════ */
+
+.nebula {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(90px);
+  opacity: 0.55;
+  pointer-events: none;
+}
+
+.nebula-1 {
+  width: 420px;
+  height: 420px;
+  background: radial-gradient(circle, rgba(192, 132, 252, 0.55), transparent);
+  top: -100px;
+  left: -120px;
+  animation: nebulaDrift 18s ease-in-out infinite;
+}
+
+.nebula-2 {
+  width: 320px;
+  height: 320px;
+  background: radial-gradient(circle, rgba(167, 139, 250, 0.45), transparent);
+  bottom: 20%;
+  right: -70px;
+  animation: nebulaDrift 22s ease-in-out infinite reverse;
+}
+
+.nebula-3 {
+  width: 280px;
+  height: 280px;
+  background: radial-gradient(circle, rgba(216, 180, 254, 0.4), transparent);
+  top: 55%;
+  left: 20%;
+  animation: nebulaDrift 16s ease-in-out infinite 4s;
+}
+
+@keyframes nebulaDrift {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33%       { transform: translate(20px, -30px) scale(1.05); }
+  66%       { transform: translate(-15px, 20px) scale(0.95); }
+}
+
+/* ══════════════════════════════════════════════════════════════
+   4. STARFIELD CANVAS — styled by JS, defined here for clarity
+   ══════════════════════════════════════════════════════════════ */
+
+#starCanvas {
+  z-index: 0;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   5. CARD COMPONENT
+   ══════════════════════════════════════════════════════════════ */
+
+.cosmos-card {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 1.25rem;
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  box-shadow: var(--card-shadow);
+  transition: box-shadow 0.3s, background 0.35s, border-color 0.35s;
+}
+
+.cosmos-card:hover {
+  box-shadow: var(--card-hover-shadow);
+}
+
+/* ══════════════════════════════════════════════════════════════
+   6. SECTION LABEL
+   ══════════════════════════════════════════════════════════════ */
+
+.section-label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--tx-muted);
+  margin-bottom: 0.75rem;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   7. HEADER ICON
+   ══════════════════════════════════════════════════════════════ */
+
+.header-icon {
+  background: var(--theme-toggle-bg);
+  border: 1px solid var(--theme-toggle-border);
+  border-radius: 12px;
+  padding: 8px;
+  color: var(--theme-toggle-color);
+  animation: sparkleRotate 6s ease-in-out infinite;
+}
+
+@keyframes sparkleRotate {
+  0%, 100% { transform: rotate(0deg) scale(1); }
+  25%       { transform: rotate(8deg) scale(1.08); }
+  75%       { transform: rotate(-8deg) scale(1.05); }
+}
+
+/* ══════════════════════════════════════════════════════════════
+   8. FORM INPUTS
+   ══════════════════════════════════════════════════════════════ */
+
+.cosmos-input {
+  background: var(--input-bg);
+  border: 1px solid var(--input-border);
+  border-radius: 0.75rem;
+  padding: 10px 14px;
+  color: var(--tx-body);
+  font-family: inherit;
+  transition: border-color 0.2s, box-shadow 0.2s, background 0.35s, color 0.35s;
+  outline: none;
+}
+
+.cosmos-input::placeholder {
+  color: var(--tx-soft);
+}
+
+.cosmos-input:focus {
+  border-color: var(--tx-muted);
+  box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.15);
+  background: var(--input-focus-bg);
+}
+
+/* Date picker specific: hide native calendar icon on webkit */
+input[type="date"].cosmos-input::-webkit-calendar-picker-indicator {
+  filter: invert(0.7) sepia(1) saturate(3) hue-rotate(220deg);
+  cursor: pointer;
+  opacity: 0.7;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   9. BUTTONS
+   ══════════════════════════════════════════════════════════════ */
+
+/* Primary (purple) */
+.btn-primary {
+  background: linear-gradient(135deg, #7e22ce, #6d28d9);
+  color: #f0e6ff;
+  font-weight: 600;
+  border-radius: 0.75rem;
+  border: 1px solid rgba(196, 181, 253, 0.2);
+  cursor: pointer;
+  transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+  font-family: inherit;
+}
+.btn-primary:hover {
+  background: linear-gradient(135deg, #6d28d9, #5b21b6);
+  box-shadow: 0 4px 14px rgba(109, 40, 217, 0.45);
+  transform: translateY(-1px);
+}
+.btn-primary:active { transform: translateY(0); }
+
+/* Secondary (soft outline) */
+.btn-secondary {
+  background: rgba(124, 58, 237, 0.08);
+  color: var(--tx-muted);
+  font-weight: 600;
+  border-radius: 0.75rem;
+  border: 1px solid rgba(124, 58, 237, 0.25);
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s, transform 0.15s;
+  font-family: inherit;
+}
+.btn-secondary:hover {
+  background: rgba(124, 58, 237, 0.15);
+  color: var(--tx-mid);
+  transform: translateY(-1px);
+}
+
+/* Accent (pink/rose) */
+.btn-accent {
+  background: linear-gradient(135deg, #9333ea, #7c3aed);
+  color: #ffffff;
+  font-weight: 700;
+  border-radius: 0.75rem;
+  border: none;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+  font-family: inherit;
+}
+.btn-accent:hover {
+  background: linear-gradient(135deg, #7c3aed, #6d28d9);
+  box-shadow: 0 4px 18px rgba(147, 51, 234, 0.5);
+  transform: translateY(-1px);
+}
+.btn-accent:active { transform: translateY(0); }
+
+/* Ghost (transparent) */
+.btn-ghost {
+  background: transparent;
+  color: var(--tx-muted);
+  font-weight: 600;
+  border-radius: 0.75rem;
+  border: 1px solid rgba(147, 51, 234, 0.2);
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+  font-family: inherit;
+}
+.btn-ghost:hover {
+  background: rgba(147, 51, 234, 0.08);
+  color: var(--tx-mid);
+}
+
+/* ══════════════════════════════════════════════════════════════
+   10. FILTER TABS
+   ══════════════════════════════════════════════════════════════ */
+
+.filter-btn {
+  color: var(--tx-muted);
+  background-color: transparent;
+  font-family: inherit;
+  border: none;
+  cursor: pointer;
+}
+.filter-btn:hover {
+  background-color: rgba(147, 51, 234, 0.08);
+  color: var(--tx-mid);
+}
+.filter-btn.active-filter {
+  background: linear-gradient(135deg, #7e22ce, #6d28d9);
+  color: #f5f0ff;
+  font-weight: 700;
+  box-shadow: 0 2px 10px rgba(109, 40, 217, 0.35);
+}
+
+/* ══════════════════════════════════════════════════════════════
+   11. TASK ITEM CARD
+   ══════════════════════════════════════════════════════════════ */
+
+.task-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  background: var(--task-item-bg);
+  border: 1px solid var(--task-border);
+  border-radius: 1rem;
+  padding: 13px 15px;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  transition: box-shadow 0.2s, border-color 0.2s, opacity 0.2s, transform 0.2s, background 0.35s;
+  animation: slideIn 0.25s ease-out;
+}
+.task-item:hover {
+  border-color: rgba(124, 58, 237, 0.35);
+  box-shadow: 0 4px 16px rgba(124, 58, 237, 0.12);
+}
+
+/* Completed task */
+.task-item.completed .task-text {
+  text-decoration: line-through;
+  color: var(--tx-soft);
+}
+.task-item.completed {
+  opacity: 0.7;
+}
+
+/* ── Custom checkbox ── */
+.task-checkbox {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 20px;
+  height: 20px;
+  min-width: 20px;
+  border: 2px solid rgba(124, 58, 237, 0.35);
+  border-radius: 6px;
+  cursor: pointer;
+  position: relative;
+  margin-top: 1px;
+  transition: background-color 0.2s, border-color 0.2s, box-shadow 0.2s;
+  background-color: rgba(255, 255, 255, 0.7);
+}
+.task-checkbox:hover {
+  border-color: #7c3aed;
+  box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.12);
+}
+.task-checkbox:checked {
+  background: linear-gradient(135deg, #c084fc, #a78bfa);
+  border-color: #c084fc;
+  box-shadow: 0 0 8px rgba(192, 132, 252, 0.5);
+}
+.task-checkbox:checked::after {
+  content: "";
+  position: absolute;
+  top: 2px;
+  left: 5px;
+  width: 6px;
+  height: 10px;
+  border: 2px solid #ffffff;
+  border-top: none;
+  border-left: none;
+  transform: rotate(45deg);
+}
+.task-checkbox:focus-visible {
+  outline: 2px solid #a78bfa;
+  outline-offset: 2px;
+}
+
+/* ── Task text ── */
+.task-text {
+  flex: 1;
+  font-size: 0.9rem;
+  line-height: 1.55;
+  color: var(--tx-body);
+  word-break: break-word;
+  transition: color 0.2s;
+  margin-top: 1px;
+  cursor: default;
+  user-select: none;
+}
+
+/* ── Action buttons ── */
+.task-actions {
+  display: flex;
+  gap: 5px;
+  opacity: 0;
+  transition: opacity 0.15s;
+  flex-shrink: 0;
+}
+.task-item:hover .task-actions,
+.task-item:focus-within .task-actions {
+  opacity: 1;
+}
+
+.btn-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.15s, color 0.15s;
+  background-color: transparent;
+  color: var(--tx-soft);
+  font-family: inherit;
+}
+.btn-icon:hover {
+  background-color: rgba(124, 58, 237, 0.07);
+}
+.btn-icon.edit:hover {
+  color: var(--tx-muted);
+  background-color: rgba(124, 58, 237, 0.1);
+}
+.btn-icon.delete:hover {
+  color: #dc2626;
+  background-color: rgba(220, 38, 38, 0.08);
+}
+.btn-icon:focus-visible {
+  outline: 2px solid #a78bfa;
+  outline-offset: 2px;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   12. AGENDA ITEM
+   ══════════════════════════════════════════════════════════════ */
+
+.agenda-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--agenda-item-bg);
+  border: 1px solid var(--agenda-border);
+  border-radius: 0.75rem;
+  padding: 10px 12px;
+  animation: slideIn 0.2s ease-out;
+  transition: border-color 0.2s, background 0.35s;
+}
+.agenda-item:hover {
+  border-color: rgba(124, 58, 237, 0.3);
+}
+
+.agenda-checkbox {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 16px;
+  height: 16px;
+  min-width: 16px;
+  border: 1.5px solid rgba(124, 58, 237, 0.35);
+  border-radius: 50%; /* circles for agenda */
+  cursor: pointer;
+  position: relative;
+  transition: background-color 0.2s, border-color 0.2s;
+  background-color: rgba(255, 255, 255, 0.7);
+}
+.agenda-checkbox:checked {
+  background: #7c3aed;
+  border-color: #7c3aed;
+}
+.agenda-checkbox:checked::after {
+  content: "";
+  position: absolute;
+  top: 1px;
+  left: 4px;
+  width: 5px;
+  height: 8px;
+  border: 1.5px solid #fff;
+  border-top: none;
+  border-left: none;
+  transform: rotate(45deg);
+}
+
+.agenda-text {
+  flex: 1;
+  font-size: 0.85rem;
+  color: var(--tx-body);
+  transition: color 0.2s;
+  word-break: break-word;
+}
+.agenda-item.done .agenda-text {
+  text-decoration: line-through;
+  color: var(--tx-soft);
+}
+.agenda-time {
+  font-size: 0.72rem;
+  color: var(--tx-muted);
+  white-space: nowrap;
+}
+
+/* Progress indicator "X dari Y selesai" */
+.agenda-progress {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--tx-muted);
+  letter-spacing: 0.03em;
+  margin-bottom: 0.5rem;
+}
+
+/* Inline edit input for agenda items */
+.agenda-inline-input {
+  flex: 1;
+  font-size: 0.85rem;
+  color: var(--tx-body);
+  background: var(--input-bg);
+  border: 1.5px solid var(--tx-muted);
+  border-radius: 0.5rem;
+  padding: 2px 8px;
+  font-family: inherit;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.15);
+  min-width: 0;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   13. QUOTE DISPLAY
+   ══════════════════════════════════════════════════════════════ */
+
+.quote-display {
+  background: var(--quote-bg);
+  border-left: 3px solid var(--tx-muted);
+  border-radius: 0 0.75rem 0.75rem 0;
+  padding: 14px 16px;
+  margin-bottom: 4px;
+  animation: quoteFade 0.5s ease-out;
+}
+
+/* Re-trigger animation class (applied by JS on each quote change) */
+.quote-fadeIn {
+  animation: quoteFade 0.5s ease-out;
+}
+
+/* ── Quote byline row (author + counter / delete btn) ── */
+.quote-byline {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 6px;
+  gap: 8px;
+}
+.quote-byline .quote-author {
+  margin-top: 0;
+}
+
+/* Counter badge  e.g. "3 / 14" */
+.quote-counter {
+  font-size: 0.68rem;
+  color: var(--tx-soft);
+  letter-spacing: 0.04em;
+  flex-shrink: 0;
+}
+
+/* ── Navigation row ── */
+.quote-nav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.quote-nav-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  border: 1px solid rgba(124, 58, 237, 0.2);
+  background: rgba(124, 58, 237, 0.06);
+  color: var(--tx-muted);
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+  flex-shrink: 0;
+}
+.quote-nav-btn:hover {
+  background: rgba(124, 58, 237, 0.14);
+  color: var(--tx-mid);
+  border-color: rgba(124, 58, 237, 0.35);
+}
+
+/* ── Saved quotes collapsible toggle ── */
+.quote-saved-toggle {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--tx-muted);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+  letter-spacing: 0.03em;
+  padding: 0;
+  transition: color 0.15s;
+}
+.quote-saved-toggle:hover { color: var(--tx-mid); }
+
+/* ── Saved list items ── */
+.quote-item {
+  animation: slideIn 0.22s ease-out;
+}
+
+.quote-delete-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 6px;
+  border: none;
+  background: transparent;
+  color: var(--tx-faint);
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background 0.15s, color 0.15s;
+}
+.quote-delete-btn:hover {
+  background: rgba(220, 38, 38, 0.08);
+  color: #dc2626;
+}
+
+@keyframes quoteFade {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.quote-text {
+  font-size: 0.95rem;
+  line-height: 1.65;
+  color: var(--tx-body);
+  font-style: italic;
+  font-weight: 500;
+}
+
+.quote-author {
+  font-size: 0.78rem;
+  color: var(--tx-muted);
+  margin-top: 6px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   14. PHOTO FRAME — aesthetic cosmic
+   ══════════════════════════════════════════════════════════════ */
+
+.photo-frame-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.photo-frame {
+  position: relative;
+  width: 130px;
+  height: 130px;
+  border-radius: 50%;           /* circular frame */
+  overflow: hidden;
+  /* Aesthetic multi-layer border */
+  box-shadow:
+    0 0 0 3px rgba(192, 132, 252, 0.5),
+    0 0 0 6px rgba(167, 139, 250, 0.18),
+    0 0 0 9px rgba(139, 92, 246, 0.1),
+    0 0 24px 4px rgba(167, 139, 250, 0.3),
+    0 0 50px 8px rgba(109, 40, 217, 0.15);
+  background: rgba(13, 10, 30, 0.8);
+  cursor: pointer;
+  transition: box-shadow 0.4s;
+  animation: frameGlow 5s ease-in-out infinite;
+}
+
+.photo-frame:hover {
+  box-shadow:
+    0 0 0 3px rgba(232, 180, 254, 0.7),
+    0 0 0 6px rgba(196, 181, 253, 0.25),
+    0 0 0 9px rgba(139, 92, 246, 0.15),
+    0 0 30px 8px rgba(196, 181, 253, 0.4),
+    0 0 60px 12px rgba(147, 51, 234, 0.2);
+}
+
+@keyframes frameGlow {
+  0%, 100% {
+    box-shadow:
+      0 0 0 3px rgba(192, 132, 252, 0.5),
+      0 0 0 6px rgba(167, 139, 250, 0.18),
+      0 0 0 9px rgba(139, 92, 246, 0.1),
+      0 0 24px 4px rgba(167, 139, 250, 0.3),
+      0 0 50px 8px rgba(109, 40, 217, 0.15);
+  }
+  50% {
+    box-shadow:
+      0 0 0 3px rgba(232, 180, 254, 0.65),
+      0 0 0 6px rgba(196, 181, 253, 0.22),
+      0 0 0 9px rgba(139, 92, 246, 0.12),
+      0 0 32px 8px rgba(196, 181, 253, 0.38),
+      0 0 64px 16px rgba(147, 51, 234, 0.2);
+  }
+}
+
+.photo-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle, rgba(109, 40, 217, 0.25), rgba(13, 10, 30, 0.7));
+}
+
+/* Camera overlay button */
+.photo-upload-btn {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 36px;
+  background: rgba(109, 40, 217, 0.7);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #f0e6ff;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+.photo-frame:hover .photo-upload-btn {
+  opacity: 1;
+}
+
+.remove-photo-btn {
+  font-size: 0.7rem;
+  color: rgba(248, 113, 113, 0.6);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+  transition: color 0.2s;
+  letter-spacing: 0.04em;
+}
+.remove-photo-btn:hover {
+  color: #f87171;
+}
+.photo-error-msg {
+  font-size: 0.7rem;
+  color: #f87171;
+  margin-top: 0.25rem;
+  text-align: center;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   15. EMPTY STATE
+   ══════════════════════════════════════════════════════════════ */
+
+.empty-moon-icon {
+  font-size: 3rem;
+  animation: moonFloat 6s ease-in-out infinite;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   16. ENTRY & MODAL ANIMATIONS
+   ══════════════════════════════════════════════════════════════ */
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateY(-8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.animate-modal {
+  animation: modalPop 0.22s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+@keyframes modalPop {
+  from { opacity: 0; transform: scale(0.9) translateY(16px); }
+  to   { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+/* ══════════════════════════════════════════════════════════════
+   17. CUSTOM SCROLLBAR
+   ══════════════════════════════════════════════════════════════ */
+
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(167, 139, 250, 0.3); border-radius: 999px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(196, 181, 253, 0.5); }
+
+/* ══════════════════════════════════════════════════════════════
+   18. UTILITIES
+   ══════════════════════════════════════════════════════════════ */
+
+/* Force flex display (used by JS to reveal empty-state div) */
+.flex-show { display: flex !important; }
+
+/* Twinkling stars rendered by JS canvas — no extra CSS needed */
+
+/* ══════════════════════════════════════════════════════════════
+   STORAGE-FULL TOAST
+   ══════════════════════════════════════════════════════════════ */
+
+.storage-toast {
+  position: fixed;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  z-index: 9999;
+  background: rgba(109, 40, 217, 0.92);
+  color: #f5f0ff;
+  font-size: 0.8rem;
+  padding: 0.6rem 1rem;
+  border-radius: 8px;
+  border: 1px solid rgba(196, 181, 253, 0.4);
+  box-shadow: 0 4px 16px rgba(109, 40, 217, 0.35);
+  max-width: 260px;
+  line-height: 1.4;
+  pointer-events: none;
+}
+.storage-toast.hidden {
+  display: none;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   19. THEME TOGGLE BUTTON
+   ══════════════════════════════════════════════════════════════ */
+
+.theme-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  border: 1px solid var(--theme-toggle-border);
+  background: var(--theme-toggle-bg);
+  color: var(--theme-toggle-color);
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background 0.2s, border-color 0.2s, transform 0.15s;
+  flex-shrink: 0;
+}
+.theme-btn:hover {
+  transform: scale(1.1);
+  background: rgba(124, 58, 237, 0.15);
+}
+
+/* ══════════════════════════════════════════════════════════════
+   20. DARK MODE — inline-style overrides
+   Elements in HTML with hardcoded style="color:..." need
+   CSS-specificity overrides here when dark theme is active.
+   ══════════════════════════════════════════════════════════════ */
+
+[data-theme="dark"] h1[style],
+[data-theme="dark"] p[style],
+[data-theme="dark"] .cosmos-card p[style] {
+  color: var(--tx-body) !important;
+}
+
+[data-theme="dark"] #headerDate,
+[data-theme="dark"] #headerTime {
+  color: var(--tx-mid) !important;
+}
+
+[data-theme="dark"] #selectedDateLabel,
+[data-theme="dark"] #agendaError,
+[data-theme="dark"] #inputError,
+[data-theme="dark"] #editError {
+  color: var(--tx-muted) !important;
+}
+
+[data-theme="dark"] #emptyTitle {
+  color: var(--tx-mid) !important;
+}
+[data-theme="dark"] #emptySubtitle,
+[data-theme="dark"] #agendaEmpty p {
+  color: var(--tx-muted) !important;
+}
+
+[data-theme="dark"] #statAll,
+[data-theme="dark"] #statActive,
+[data-theme="dark"] #statCompleted {
+  color: var(--tx-mid) !important;
+}
+
+[data-theme="dark"] .cosmos-card p[style*="color:#9333ea"],
+[data-theme="dark"] .cosmos-card p[style*="color:#7c3aed"],
+[data-theme="dark"] .cosmos-card p[style*="color:#4c1d95"] {
+  color: var(--tx-muted) !important;
+}
+
+[data-theme="dark"] #modalOverlay {
+  background: var(--modal-overlay) !important;
+}
+
+[data-theme="dark"] #modalTitle {
+  color: var(--tx-heading) !important;
+}
+
+[data-theme="dark"] #clearCompletedBtn {
+  color: var(--tx-muted) !important;
+}
+
+/* Dark mode: nebula opacity boost for visibility on dark bg */
+[data-theme="dark"] .nebula {
+  opacity: 0.35;
+}
+
+/* Dark mode: crescent moon brighter */
+[data-theme="dark"] .crescent-moon {
+  background: radial-gradient(circle at 35% 40%, rgba(255,255,255,0.9) 0%, #c4b5fd 40%, #7c3aed 100%);
+}
+
+/* ══════════════════════════════════════════════════════════════
+   21. ALBUM MINI FOTO
+   ══════════════════════════════════════════════════════════════ */
+
+/* Count badge */
+.album-count-badge {
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: var(--tx-soft);
+  letter-spacing: 0.04em;
+}
+
+/* Grid */
+.album-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+@media (max-width: 480px) {
+  .album-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+/* Single album card */
+.album-item {
+  position: relative;
+  border-radius: 0.75rem;
+  overflow: hidden;
+  background: var(--agenda-item-bg);
+  border: 1px solid var(--agenda-border);
+  animation: slideIn 0.25s ease-out;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.album-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(124, 58, 237, 0.2);
+}
+
+/* Photo thumbnail */
+.album-photo {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  display: block;
+  cursor: pointer;
+}
+
+/* Caption area */
+.album-caption-wrap {
+  padding: 6px 8px 8px;
+}
+.album-caption {
+  font-size: 0.75rem;
+  color: var(--tx-body);
+  line-height: 1.4;
+  width: 100%;
+  outline: none;
+  background: transparent;
+  border: none;
+  border-bottom: 1px dashed transparent;
+  font-family: inherit;
+  cursor: text;
+  transition: border-color 0.2s;
+  resize: none;
+  padding: 0;
+  overflow: hidden;
+}
+.album-caption:focus {
+  border-bottom-color: var(--tx-muted);
+}
+.album-caption::placeholder {
+  color: var(--tx-soft);
+}
+
+/* Delete button (top-right corner, shows on hover) */
+.album-delete-btn {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(0, 0, 0, 0.55);
+  color: #fff;
+  font-size: 0.7rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.15s, background 0.15s;
+}
+.album-item:hover .album-delete-btn,
+.album-item:focus-within .album-delete-btn {
+  opacity: 1;
+}
+.album-delete-btn:hover {
+  background: rgba(220, 38, 38, 0.8);
+}
+
+/* ── Lightbox ── */
+.album-lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 9000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+.album-lightbox.hidden { display: none; }
+
+.album-lightbox-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(5, 3, 18, 0.85);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.album-lightbox-content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  max-width: min(90vw, 560px);
+  animation: modalPop 0.22s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+.album-lightbox-img {
+  width: 100%;
+  max-height: 75vh;
+  object-fit: contain;
+  border-radius: 1rem;
+  box-shadow: 0 0 0 3px rgba(192, 132, 252, 0.4), 0 16px 48px rgba(109, 40, 217, 0.4);
+}
+
+.album-lightbox-caption {
+  font-size: 0.88rem;
+  color: #e9d5ff;
+  text-align: center;
+  line-height: 1.5;
+  max-width: 480px;
+  opacity: 0.9;
+}
+.album-lightbox-caption:empty { display: none; }
+
+.album-lightbox-close {
+  position: absolute;
+  top: -14px;
+  right: -14px;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(109, 40, 217, 0.7);
+  color: #f0e6ff;
+  font-size: 0.85rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s, transform 0.15s;
+}
+.album-lightbox-close:hover {
+  background: rgba(147, 51, 234, 0.9);
+  transform: scale(1.1);
+}
+
+/* Dark mode: album empty text */
+[data-theme="dark"] #albumEmpty p {
+  color: var(--tx-muted) !important;
+}
